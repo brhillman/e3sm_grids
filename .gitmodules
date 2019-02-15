@@ -1,0 +1,3 @@
+[submodule "tempestremap"]
+	path = tempestremap
+	url = https://github.com/ClimateGlobalChange/tempestremap
