@@ -29,16 +29,21 @@ for arg in "$@"; do
     esac
 done
 
-# Setup environment
-module load python
-source activate e3sm-unified
+# Setup environment; nco and ncl needed for scripts called from mkmapdata
+source .env_mach_specific.sh
+module load nco
+module load ncl
+ESMFBIN_PATH=/project/projectdirs/acme/software/esmf/cori-knl/bin/binO/Unicos.intel.64.mpi.default
 
 # Run the script FROM SCRATCH SPACE!!!!
 mkdir -p ${output_root}/landsurf_maps && cd ${output_root}/landsurf_maps
 e3sm_root=${HOME}/codes/e3sm/branches/update-mkmapdata
 mkmapdata=${e3sm_root}/components/clm/tools/shared/mkmapdata/mkmapdata.sh
+mpiexec="srun --account=acme --partition=regular --constraint=knl --time=02:00:00 --ntasks=128 --nodes=128"
 ${mkmapdata} \
     --gridfile ${atm_scrip_file} --res ${atm_grid_name} \
     --inputdata-path ${inputdata_root} \
-    --mpiexec "srun" \
-    --output-filetype netcdf4 ${debug} --verbose --batch
+    --mpiexec "${mpiexec}" \
+    --esmf-path ${ESMFBIN_PATH} \
+    --output-filetype 64bit_offset \
+    ${debug} --verbose --batch
