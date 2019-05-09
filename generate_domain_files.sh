@@ -1,12 +1,29 @@
 #!/bin/bash
 
-if [ $# -eq 1 ]; then
+if [ $# -ge 1 ]; then
     configuration=$1
     source ${configuration}
+    shift
 else
     echo "usage: `basename $0` <configuration file>"
     exit 1
 fi
+
+# Parse optional arguments
+method=""
+for arg in "$@"; do
+    case $arg in
+        --method=*)
+            method="${arg#*=}"
+            shift
+            ;;
+        *)
+            echo "Error parsing ${arg}. See usage."
+            exit 1
+            ;;
+    esac
+done
+
 
 #-------------------------------------------------------------------------------
 # Build domain tool
@@ -29,26 +46,38 @@ if [ "${atm_grid_name}" != "${lnd_grid_name}" ]; then
 else
     destination_grids=(${atm_grid_name})
 fi
+mapping_root=${output_root}/mapping_files
 for destination_grid in ${destination_grids[@]}; do
 
     # Find mapping files
-    mapping_root=${output_root}/mapping_files
-    if [ -e ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_monotr.*.nc ]; then
-        map_ocn_to_lnd=`ls ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_monotr.*.nc | tail -n1`
-    elif [ -e ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_mono.*.nc ]; then
-        map_ocn_to_lnd=`ls ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_mono.*.nc | tail -n1`
-    elif [ -e ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_aave.*.nc ]; then
-        map_ocn_to_lnd=`ls ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_aave.*.nc | tail -n1`
+    if [ "${method}" != "" ]; then
+        if `ls ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_${method}.*.nc &> /dev/null`; then
+            map_ocn_to_lnd=`ls ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_${method}.*.nc | tail -n1`
+        else
+            "No valid mapping files found for ${ocn_grid_name} to ${destination_grid}"
+            exit 0
+        fi
     else
-        "No valid mapping files found for ${ocn_grid_name} to ${destination_grid}"
-        exit 1
+        if `ls ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_monotr.*nc &> /dev/null`; then
+            map_ocn_to_lnd=`ls ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_monotr.*.nc | tail -n1`
+        elif `ls ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_mono.*.nc &> /dev/null`; then
+            map_ocn_to_lnd=`ls ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_mono.*.nc | tail -n1`
+        elif `ls ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_aave.*.nc &> /dev/null`; then
+            map_ocn_to_lnd=`ls ${mapping_root}/map_${ocn_grid_name}_to_${destination_grid}_aave.*.nc | tail -n1`
+        else
+            "No valid mapping files found for ${ocn_grid_name} to ${destination_grid}"
+            exit 1
+        fi
     fi
 
     # Generate domain files
     domain_root=${output_root}/domain_files
     mkdir -p ${domain_root} && cd ${domain_root}
-    ${gen_domain} -m ${map_ocn_to_lnd} -o ${ocn_grid_name} -l ${destination_grid} \
-        --fminval 0.1 --fmaxval 1.0
+    ${gen_domain} \
+        -m ${map_ocn_to_lnd} \
+        -o ${ocn_grid_name} \
+        -l ${destination_grid} \
+        --fminval 0.001 --fmaxval 1.0
     if [ $? -ne 0 ]; then
         echo "gen_domain failed"
         exit 1
