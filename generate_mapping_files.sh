@@ -23,29 +23,42 @@ export NCO_PATH_OVERRIDE='No'
 
 # Generate mapping files between all grids
 datestring=`date +'%y%m%d'`
+
+method="tempest"
+if [ "${method}" == "esmf" ]; then
+    atm_grid_file=${atm_scrip_file}
+else
+    atm_grid_file=${atm_mesh_file}
+fi
+echo "Using atmosphere grid file ${atm_grid_file}"
 mapping_root=${output_root}/mapping_files
 mkdir -p ${mapping_root} && cd ${mapping_root}
 
+# Maps between atmosphere and ocean
 if [ "${ocn_grid_name}" != "${atm_grid_name}" ]; then
     echo "Map ocean to atmosphere..."
     ncremap -P mwf \
-        -s ${ocn_scrip_file} -g ${atm_mesh_file} \
+        -s ${ocn_scrip_file} -g ${atm_grid_file} \
         --nm_src=${ocn_grid_name} --nm_dst=${atm_grid_name} \
         --dt_sng=${datestring}
 fi
 
+# Maps between atmosphere and land (for tri-grid)
 if [ "${atm_grid_name}" != "${lnd_grid_name}" ]; then
     echo "Map land to atmosphere..."
+    cd ${mapping_root}
     ncremap -P mwf \
-        -s ${lnd_scrip_file} -g ${atm_mesh_file} \
+        -s ${lnd_scrip_file} -g ${atm_grid_file} \
         --nm_src=${lnd_grid_name} --nm_dst=${atm_grid_name} \
         --dt_sng=${datestring}
 fi
 
-if [ "${ocn_grid_name}" != "${lnd_grid_name}" ] && [ "${atm_grid_name}" != "${lnd_grid_name}" ]; then
+# Maps between ocean and land (for domain files if running tri-grid)
+if [ "${atm_grid_name}" != "${lnd_grid_name}" ]; then
     echo "Map ocean to land..."
+    cd ${mapping_root}
     ncremap -P mwf \
         -s ${ocn_scrip_file} -g ${lnd_scrip_file} \
         --nm_src=${ocn_grid_name} --nm_dst=${lnd_grid_name} \
-        --dt_sng=${datestring}
+        --dt_sng=${datestring} 
 fi
