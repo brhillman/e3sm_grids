@@ -27,16 +27,19 @@ done
 
 
 # Load a common conda environment for E3SM pre and post processing tools
-#source /global/project/projectdirs/acme/software/anaconda_envs/load_latest_e3sm_unified.sh
-module load python
-source activate e3sm-unified
+source /global/project/projectdirs/acme/software/anaconda_envs/load_latest_e3sm_unified.sh
+#module load python
+#source activate e3sm-unified
 
 # Append path to include TempestRemap path
+# Broken as of 11June2019, BRH told to comment-out
+# Update to Charlie Zender's latest builds on Cori
+# source ~zender/bin_cori
 tempest_path=${PWD}/tempestremap/bin
 PATH=${tempest_path}:${PATH}
 
 # Need to override hard-coded paths in NCO scripts
-#export NCO_PATH_OVERRIDE='No'
+export NCO_PATH_OVERRIDE='No'
 
 # Generate mapping files between all grids
 datestring=`date +'%y%m%d'`
