@@ -15,8 +15,7 @@ dualgrid_root="${PreAndPostProcessingScripts}/regridding/spectral_elements_grid_
 
 # Make sure code exists; if not, we need to clone the git repo
 if [ ! -d ${PreAndPostProcessingScripts} ]; then
-    git clone git@github.com:ACME-Climate/PreAndPostProcessingScripts.git
-${PreAndPostProcessingScripts}
+    git clone git@github.com:ACME-Climate/PreAndPostProcessingScripts.git ${PreAndPostProcessingScripts}
 
     # For now, need a specific branch
     cd ${PreAndPostProcessingScripts} && checkout brhillman/add-grid-scripts

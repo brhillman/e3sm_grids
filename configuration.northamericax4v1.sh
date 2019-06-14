@@ -49,12 +49,12 @@ ocn_scrip_file="/project/projectdirs/acme/inputdata/ocn/mpas-o/oRRS15to5/ocean.R
 #lnd_scrip_file=${mapdata_root}/grids/ne120np4_pentagons.100310.nc
 #lnd_scrip_file=${mapdata_root}/grids/ne240np4_091227_pentagons.nc
 #lnd_scrip_file=${mapdata_root}/grids/ne30np4_pentagons.091226.nc
-#lnd_grid_name=360x720cru
-#lnd_scrip_file=${inputdata_root}/lnd/clm2/mappingdata/grids/SCRIPgrid_360x720_nomask_c120830.nc
+lnd_grid_name=360x720cru
+lnd_scrip_file=${inputdata_root}/lnd/clm2/mappingdata/grids/SCRIPgrid_360x720_nomask_c120830.nc
 #lnd_grid_name=fv1.9x2.5
 #lnd_scrip_file="${mapdata_root}/grids/fv1.9x2.5_090205.nc"
-lnd_grid_name=northamericax4v1
-lnd_scrip_file=${output_root}/northamericax4v1np4b_scrip.nc
+#lnd_grid_name=northamericax4v1
+#lnd_scrip_file=${output_root}/northamericax4v1np4b_scrip.nc
 
 grid_name=${atm_grid_name}_${lnd_grid_name}_${ocn_grid_name}
 

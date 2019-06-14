@@ -25,6 +25,19 @@ for arg in "$@"; do
 done
 
 
+# Set paths to code root
+e3sm_root="${HOME}/codes/e3sm/branches/master"
+
+# Make sure code and directory exists; if not, clone the git repo and make the directory 
+if [ ! -d ${e3sm_root} ]; then
+    mkdir -p ${e3sm_root}
+    git clone git@github.com:E3SM-Project/E3SM.git ${e3sm_root}
+
+    # Change to directory. 
+    cd ${e3sm_root} 
+fi
+
+
 #-------------------------------------------------------------------------------
 # Build domain tool
 

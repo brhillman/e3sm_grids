@@ -34,9 +34,9 @@ source /global/project/projectdirs/acme/software/anaconda_envs/load_latest_e3sm_
 # Append path to include TempestRemap path
 # Broken as of 11June2019, BRH told to comment-out
 # Update to Charlie Zender's latest builds on Cori
-# source ~zender/bin_cori
-tempest_path=${PWD}/tempestremap/bin
-PATH=${tempest_path}:${PATH}
+zender_path=~zender/bin_cori
+tempest_path=~bhillma/codes/e3sm/e3sm_grids/tempestremap/bin
+PATH=${zender_path}:${tempest_path}:${PATH}
 
 # Need to override hard-coded paths in NCO scripts
 export NCO_PATH_OVERRIDE='No'
@@ -63,22 +63,22 @@ if [ "${ocn_grid_name}" != "${atm_grid_name}" ]; then
         --dt_sng=${datestring}
 fi
 
-## Maps between atmosphere and land (for tri-grid)
-#if [ "${atm_grid_name}" != "${lnd_grid_name}" ]; then
-#    echo "Map land to atmosphere..."
-#    cd ${mapping_root}
-#    ncremap -P mwf \
-#        -s ${lnd_scrip_file} -g ${atm_grid_file} \
-#        --nm_src=${lnd_grid_name} --nm_dst=${atm_grid_name} \
-#        --dt_sng=${datestring}
-#fi
-#
-## Maps between ocean and land (for domain files if running tri-grid)
-#if [ "${atm_grid_name}" != "${lnd_grid_name}" ]; then
-#    echo "Map ocean to land..."
-#    cd ${mapping_root}
-#    ncremap -P mwf \
-#        -s ${ocn_scrip_file} -g ${lnd_scrip_file} \
-#        --nm_src=${ocn_grid_name} --nm_dst=${lnd_grid_name} \
-#        --dt_sng=${datestring} 
-#fi
+# Maps between atmosphere and land (for tri-grid)
+if [ "${atm_grid_name}" != "${lnd_grid_name}" ]; then
+    echo "Map land to atmosphere..."
+    cd ${mapping_root}
+    ncremap -P mwf \
+        -s ${lnd_scrip_file} -g ${atm_grid_file} \
+        --nm_src=${lnd_grid_name} --nm_dst=${atm_grid_name} \
+        --dt_sng=${datestring}
+fi
+
+# Maps between ocean and land (for domain files if running tri-grid)
+if [ "${atm_grid_name}" != "${lnd_grid_name}" ]; then
+    echo "Map ocean to land..."
+    cd ${mapping_root}
+    ncremap -P mwf \
+        -s ${ocn_scrip_file} -g ${lnd_scrip_file} \
+        --nm_src=${ocn_grid_name} --nm_dst=${lnd_grid_name} \
+        --dt_sng=${datestring} 
+fi
