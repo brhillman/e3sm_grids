@@ -27,6 +27,9 @@ atm_grid_name=northamericax4v1
 # Set output directory to atm grid name
 output_root=/project/projectdirs/acme/${user}/grids/${atm_grid_name}
 
+# High resolution region names for mapping later
+source_mesh_file=ne120.g
+source_mesh_file_atm_resolution=120
 
 # Make sure directories exist.  If not, make it.
 if [ ! -d ${output_root} ]; then
