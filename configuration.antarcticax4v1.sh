@@ -3,8 +3,8 @@
 # Specify user handle
 user=eroesler
 
-inputdata_root=/project/projectdirs/acme/inputdata
-mapdata_root=/project/projectdirs/acme/mapping
+# Generate datestring for all new files 
+datestring=`date +'%y%m%d'`
 
 
 # Atmos files and descriptive names that may be present
@@ -15,6 +15,20 @@ atm_grid_name=antarcticax4v1
 
 # Set output directory to atm grid name
 output_root=/project/projectdirs/acme/${user}/grids/${atm_grid_name}
+
+
+# Set mapping root with method used to create mapping files
+#method=esmf
+method=tempest
+mapping_root=${output_root}/mapping_files/${method}
+
+
+# Set paths to code root
+e3sm_root="${HOME}/codes/e3sm/e3sm/branches/master"
+
+
+# Set paths to output directories 
+inputdata_root=/project/projectdirs/acme/inputdata
 
 
 # Scrip and g file

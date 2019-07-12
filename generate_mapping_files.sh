@@ -10,7 +10,8 @@ else
     exit 1
 fi
 
-# Parse optional arguments
+
+# Parse optional arguments.  Tempest takes grid file.  E3SM takes scrip file.  
 method="tempest"
 for arg in "$@"; do
     case $arg in
@@ -25,33 +26,40 @@ for arg in "$@"; do
     esac
 done
 
-
-# Load a common conda environment for E3SM pre and post processing tools
-source /global/project/projectdirs/acme/software/anaconda_envs/load_latest_e3sm_unified.sh
-#module load python
-#source activate e3sm-unified
-
-# Append path to include TempestRemap path
-# Broken as of 11June2019, BRH told to comment-out
-# Update to Charlie Zender's latest builds on Cori
-zender_path=~zender/bin_cori
-tempest_path=~bhillma/codes/e3sm/e3sm_grids/tempestremap/bin
-PATH=${zender_path}:${tempest_path}:${PATH}
-
-# Need to override hard-coded paths in NCO scripts
-export NCO_PATH_OVERRIDE='No'
-
-# Generate mapping files between all grids
-datestring=`date +'%y%m%d'`
-
 if [ "${method}" == "esmf" ]; then
     atm_grid_file=${atm_scrip_file}
 else
     atm_grid_file=${atm_mesh_file}
 fi
-echo "Using atmosphere grid file ${atm_grid_file}"
-mapping_root=${output_root}/mapping_files
-mkdir -p ${mapping_root} && cd ${mapping_root}
+
+
+
+# Load a common conda environment for E3SM pre and post processing tools
+source /global/project/projectdirs/acme/software/anaconda_envs/load_latest_e3sm_unified.sh
+
+
+# Append path to include TempestRemap path
+tempest_path=~bhillma/codes/e3sm/e3sm_grids/tempestremap/bin
+PATH=${tempest_path}:${PATH}
+
+
+# Update to Charlie Zender's latest builds on Cori
+zender_path=~zender/bin_cori
+PATH=${zender_path}:${PATH}
+
+
+# Override hard-coded paths in NCO scripts
+export NCO_PATH_OVERRIDE='No'
+
+
+
+# Make mapping folder exists.  If not, make it!
+if [ ! -d ${mapping_root} ]; then
+   mkdir -p ${mapping_root} 
+   mkdir -p ${mapping_root}
+fi
+cd ${mapping_root}
+
 
 # Maps between atmosphere and ocean
 if [ "${ocn_grid_name}" != "${atm_grid_name}" ]; then
