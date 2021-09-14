@@ -7,13 +7,13 @@ if [ "${lnd_grid_name}" == "${atm_grid_name}" ]; then
     lnd_grid_file=${output_root}/${lnd_grid_name}_scrip.nc
 fi
 cd ${e3sm_root}/components/elm/tools/shared/mkmapdata
-echo ./mkmapdata.sh \
+./mkmapdata.sh \
     --gridfile ${lnd_grid_file} \
     --inputdata-path ${inputdata_root} \
     --res ${lnd_grid_name} \
     --gridtype global \
     --output-filetype 64bit_offset \
-    --debug -v --list
+    --debug -v --list || exit 1
 
 # Make sure we have input files
 e3sm_inputdata_repository="https://web.lcrc.anl.gov/public/e3sm"
@@ -35,14 +35,13 @@ cat $inputdata_list | while read line; do
 done
 
 # Make maps
-source activate nco
-echo nice ./mkmapdata.sh \
+nice ./mkmapdata.sh \
     --gridfile ${lnd_grid_file} \
     --inputdata-path ${inputdata_root} \
     --res ${lnd_grid_name} \
     --gridtype global \
     --output-filetype 64bit_offset \
-    -v
+    -v || exit 1
 
 if [ $? -ne 0 ]; then
     echo "Something went wrong."
@@ -51,10 +50,10 @@ fi
 
 # Build mksurfdata_map
 cd ${e3sm_root}/components/elm/tools/clm4_5/mksurfdata_map/src || exit 1
-${e3sm_root}/cime/tools/configure --macros-format=Makefile || exit 1
+${e3sm_root}/cime/tools/configure --macros-format=Makefile --machine=${machine} || exit 1
 source .env_mach_specific.sh || exit 1
 INC_NETCDF=${NETCDFROOT}/include \
-    LIB_NETCDF=${NETCDFROOT}/lib USER_FC=gfortran \
+    LIB_NETCDF=${NETCDFROOT}/lib USER_FC=${fortran_compiler} \
     USER_FFLAGS="-g -O0 -fno-range-check -ffixed-line-length-none -ffree-line-length-none" \
     USER_LDFLAGS="`nf-config --flibs`" make
 

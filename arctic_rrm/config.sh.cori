@@ -7,8 +7,9 @@ output_root=${CSCRATCH}/e3sm/grids/${atm_grid_name} #/sems-data-store/ACME/bhill
 inputdata_root=/global/cfs/cdirs/e3sm/inputdata #/sems-data-store/ACME/inputdata
 e3sm_root=${HOME}/codes/e3sm/branches/fix-mkmapdata #${HOME}/codes/e3sm/branches/master
 
-# Machine will be used in some of the scripts to get proper environment
+# Machine and compiler will be used in some of the scripts to get proper environment
 machine="cori-knl"
+fortran_compiler="ifort"
 
 # Need an environment with at least nco and ncl; can create this with conda like:
 # > conda create --name ncl -c conda-forge nco ncl
