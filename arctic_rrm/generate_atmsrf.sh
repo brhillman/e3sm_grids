@@ -4,7 +4,7 @@
 source config.sh
 
 # Set full name for physics grid
-physics_grid=${atm_grid_name}pg2
+physics_grid=${atm_grid_name}
 
 # Build mkatmsrffile
 cd ${e3sm_root}/components/eam/tools/mkatmsrffile || exit 1
