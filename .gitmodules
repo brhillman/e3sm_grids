@@ -1,3 +1,6 @@
 [submodule "tempestremap"]
 	path = tempestremap
 	url = https://github.com/ClimateGlobalChange/tempestremap
+[submodule "squadgen"]
+	path = squadgen
+	url = git@github.com:ClimateGlobalChange/squadgen.git
