@@ -16,6 +16,8 @@ output_root=${CSCRATCH}/e3sm/grids/${atm_grid_name}
 inputdata_root=/global/cfs/cdirs/e3sm/inputdata
 e3sm_root=${HOME}/git_repos/E3SM
 hiccup_root=${HOME}/git_repos/HICCUP
+mapping_root=/project/projectdirs/e3sm/mapping
+script_dir=${PWD}
 
 # homme_tool
 
