@@ -10,8 +10,8 @@ else
     exit 1
 fi
 
-in_mesh=${output_root}/${dyn_grid_name}.g
-out_mesh=${output_root}/${atm_grid_name}.g
+in_mesh=${output_root}/grids/${dyn_grid_name}.g
+out_mesh=${output_root}/grids/${atm_grid_name}.g
 if [ -e ${out_mesh} ]; then
     echo "${out_mesh} exists; skipping."
     exit 0

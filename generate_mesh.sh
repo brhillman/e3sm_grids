@@ -9,7 +9,7 @@ else
 fi
 
 # Generate exodus mesh file
-atm_mesh_file=${output_root}/ne${atm_resolution}.g
+atm_mesh_file=${output_root}/grids/ne${atm_resolution}.g
 mkdir -p `dirname ${atm_mesh_file}`
 if [ -e ${atm_mesh_file} ]; then
     echo "${atm_mesh_file} exists; skipping."
