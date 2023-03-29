@@ -18,7 +18,7 @@ if [ -e ${out_mesh} ]; then
     echo "${out_mesh} exists; skipping."
     exit 0
 else
-    ConvertExodusToSCRIP --in ${in_mesh} --out ${out_mesh}
+    ConvertMeshToSCRIP --in ${in_mesh} --out ${out_mesh}
 fi
 
 # Make sure grid_imask has type int and convert to cdf5 format
