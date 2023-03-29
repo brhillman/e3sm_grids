@@ -15,8 +15,8 @@ eval $( ${e3sm_root}/cime/CIME/Tools/get_case_env ) #&& source .env_mach_specifi
 
 ntasks=4
 homme_tool_root=${e3sm_root}/components/homme/test/tool
-mkdir -p ${output_root}/topo
-cd ${output_root}/topo
+mkdir -p ${output_root}/grids
+cd ${output_root}/grids
 #cd ${homme_tool_root}
 cmake \
     -C ${homme_tool_root}/../../cmake/machineFiles/perlmutter-nocuda-gnu.cmake \
