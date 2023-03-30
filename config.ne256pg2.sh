@@ -1,0 +1,10 @@
+#!/bin/bash
+inputdata_root=/global/cfs/cdirs/e3sm/inputdata
+e3sm_root=${HOME}/codes/e3sm/branches/master
+atm_resolution=256
+atm_grid_name=ne${atm_resolution}pg2
+dyn_grid_name=ne${atm_resolution}
+lnd_grid_name=${atm_grid_name}
+ocn_grid_name=ICOS10
+ocn_grid_file="${inputdata_root}/ocn/mpas-o/ICOS10/ocean.ICOS10.scrip.211015.nc"
+output_root=/global/cfs/cdirs/e3sm/bhillma/grids/${atm_grid_name}

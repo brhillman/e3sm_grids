@@ -6,6 +6,6 @@ ocn_grid_name=ICOS10
 ocn_grid_file="/global/cfs/cdirs/e3sm/inputdata/ocn/mpas-o/ICOS10/ocean.ICOS10.scrip.211015.nc"
 #ocn_scrip_file="${inputdata_root}/ocn/mpas-o/oRRS18to6v3/oRRS18to6v3.171116.nc"
 lnd_grid_name=${atm_grid_name}
-output_root=${CSCRATCH}/grids/${atm_grid_name}
+output_root=/global/cfs/cdirs/e3sm/bhillma/grids/${atm_grid_name}
 inputdata_root=/global/cfs/cdirs/e3sm/inputdata
 e3sm_root=${HOME}/codes/e3sm/branches/master

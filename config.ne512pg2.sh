@@ -1,0 +1,10 @@
+#!/bin/bash
+atm_resolution=512
+atm_grid_name=ne${atm_resolution}pg2
+dyn_grid_name=ne${atm_resolution}
+ocn_grid_name=oARRM60to10
+lnd_grid_name=${atm_grid_name}
+tempest_root=${HOME}/codes/e3sm_grids/tempestremap
+output_root=${CSCRATCH}/grids/${atm_grid_name}
+inputdata_root=/global/cfs/cdirs/e3sm/inputdata
+e3sm_root=${HOME}/codes/e3sm/branches/master
