@@ -4,3 +4,5 @@
 *.pdf
 *.dat
 .ipynb_checkpoints
+.env_mach_specific.sh
+.env_mach_specific.csh
