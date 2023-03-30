@@ -9,24 +9,17 @@ else
     exit 1
 fi
 
-# Build homme_tool
-${e3sm_root}/cime/CIME/scripts/configure && source .env_mach_specific.sh
-eval $( ${e3sm_root}/cime/CIME/Tools/get_case_env ) #&& source .env_mach_specific.sh
+tools_root=${PWD}/tools
 
+# Build homme_tool
+./build_homme_tool.sh $1
 ntasks=4
-homme_tool_root=${e3sm_root}/components/homme/test/tool
+
 mkdir -p ${output_root}/grids
 cd ${output_root}/grids
-#cd ${homme_tool_root}
-cmake \
-    -C ${homme_tool_root}/../../cmake/machineFiles/perlmutter-nocuda-gnu.cmake \
-    -DBUILD_HOMME_WITHOUT_PIOLIBRARY=OFF \
-    -DPREQX_PLEV=26 \
-    -DUSE_NUM_PROCS=${ntasks} \
-    ${homme_tool_root}/../../
-make -j4 homme_tool
 
 # Run homme_tool
+eval $( ${e3sm_root}/cime/CIME/Tools/get_case_env ) #&& source .env_mach_specific.sh
 cat > input.nl <<EOF
 &ctl_nl
 ne = ${atm_resolution}
@@ -45,7 +38,7 @@ output_type='netcdf'
 io_stride = 16
 /
 EOF
-srun --nodes=1 --ntasks=${ntasks} ./src/tool/homme_tool < input.nl
+srun --nodes=1 --ntasks=${ntasks} ${tools_root}/homme_tool/src/tool/homme_tool < input.nl
 
 # make the 'scrip' file for target GLL grid
 ncks -O -v lat,lon,area,cv_lat,cv_lon ne${atm_resolution}np4_tmp1.nc ne${atm_resolution}np4_tmp.nc
