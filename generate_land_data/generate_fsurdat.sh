@@ -14,8 +14,9 @@ if [ "${lnd_grid_name}" == "${atm_grid_name}" ]; then
     #lnd_grid_file=${output_root}/${lnd_grid_name}_scrip.nc
     lnd_grid_file=${output_root}/grids/${lnd_grid_name}_scrip.nc
 fi
+mkmapdata=${e3sm_root}/components/elm/tools/mkmapdata/mkmapdata.sh
 cd ${e3sm_root}/components/elm/tools/mkmapdata
-./mkmapdata.sh \
+echo ${mkmapdata} \
     --gridfile ${lnd_grid_file} \
     --inputdata-path ${inputdata_root} \
     --res ${lnd_grid_name} \
@@ -43,9 +44,8 @@ cat $inputdata_list | while read line; do
 done
 
 # Make maps
-mkdir -p ${output_root}
-cd ${output_root}
-mkmapdata=${e3sm_root}/components/elm/tools/mkmapdata/mkmapdata.sh
+mkdir -p ${output_root}/fsurdat
+cd ${output_root}/fsurdat
 #mpiexec="srun -A m1199 -t 02:00:00 -q regular -N 1 -C knl -n 1"
 mpiexec="srun -A m1199 -t 02:00:00 -q interactive -N 1 -C cpu -n 1"
 echo ${mkmapdata} \
@@ -59,7 +59,7 @@ echo ${mkmapdata} \
 
 # Build mksurfdata_map
 cd ${e3sm_root}/components/elm/tools/mksurfdata_map/src || exit 1
-${e3sm_root}/cime/CIME/scripts/configure --macros-format=Makefile || exit 1
+${e3sm_root}/cime/CIME/scripts/configure --compiler gnu --machine pm-cpu --mpilib=mpich --macros-format=Makefile || exit 1
 source .env_mach_specific.sh || exit 1
 #INC_NETCDF=${NETCDFROOT}/include \
 #    LIB_NETCDF=${NETCDFROOT}/lib USER_FC=${fortran_compiler} \
@@ -67,13 +67,13 @@ source .env_mach_specific.sh || exit 1
 #    USER_LDFLAGS="`nf-config --flibs`" make
 INC_NETCDF="`nf-config --includedir`" \
     LIB_NETCDF="`nc-config --libdir`" USER_FC="`nc-config --fc`" USER_FCTYP="gnu" \
-    USER_LDFLAGS="`nf-config --flibs`" USER_FFLAGS="-g" make
+    USER_LDFLAGS="`nf-config --flibs`" USER_FFLAGS="-g -fallow-invalid-boz -ffree-line-length-none -ffixed-line-length-none" make
 
 # Make fsurdat
-datestr=`date +'%y%m%d'`
+datestr=230119 #`date +'%y%m%d'`
 mksurfdata=${e3sm_root}/components/elm/tools/mksurfdata_map/mksurfdata.pl
-cd ${output_root}
+cd ${output_root}/fsurdat
 # Get list of files we need
 nice ${mksurfdata} \
-    -res usrspec -usr_gname ${lnd_grid_name} -usr_gdate ${datestr} -usr_mapdir ${output_root} \
+    -res usrspec -usr_gname ${lnd_grid_name} -usr_gdate ${datestr} -usr_mapdir ${output_root}/fsurdat \
     -dinlc ${inputdata_root} -year 2010

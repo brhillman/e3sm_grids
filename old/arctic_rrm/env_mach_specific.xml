@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<file id="env_mach_specific.xml" version="2.0">
+  <header>
+    These variables control the machine dependent environment including
+    the paths to compilers and libraries external to cime such as netcdf,
+    environment variables for use in the running job should also be set	here.
+    </header>
+  <group id="compliant_values">
+    <entry id="run_exe" value="${EXEROOT}/e3sm.exe ">
+      <type>char</type>
+      <desc>executable name</desc>
+    </entry>
+    <entry id="run_misc_suffix" value=" &gt;&gt; e3sm.log.$LID 2&gt;&amp;1 ">
+      <type>char</type>
+      <desc>redirect for job output</desc>
+    </entry>
+  </group>
+  <module_system type="module">
+    <init_path lang="perl">/opt/modules/default/init/perl</init_path>
+    <init_path lang="python">/opt/modules/default/init/python</init_path>
+    <init_path lang="sh">/opt/modules/default/init/sh</init_path>
+    <init_path lang="csh">/opt/modules/default/init/csh</init_path>
+    <cmd_path lang="perl">/opt/modules/default/bin/modulecmd perl</cmd_path>
+    <cmd_path lang="python">/opt/modules/default/bin/modulecmd python</cmd_path>
+    <cmd_path lang="sh">module</cmd_path>
+    <cmd_path lang="csh">module</cmd_path>
+    <modules>
+      <command name="rm">craype</command>
+      <command name="rm">craype-mic-knl</command>
+      <command name="rm">craype-haswell</command>
+      <command name="rm">PrgEnv-intel</command>
+      <command name="rm">PrgEnv-cray</command>
+      <command name="rm">PrgEnv-gnu</command>
+      <command name="rm">intel</command>
+      <command name="rm">cce</command>
+      <command name="rm">gcc</command>
+      <command name="rm">cray-parallel-netcdf</command>
+      <command name="rm">cray-hdf5-parallel</command>
+      <command name="rm">pmi</command>
+      <command name="rm">cray-mpich2</command>
+      <command name="rm">cray-mpich</command>
+      <command name="rm">cray-netcdf</command>
+      <command name="rm">cray-hdf5</command>
+      <command name="rm">cray-netcdf-hdf5parallel</command>
+      <command name="rm">cray-libsci</command>
+      <command name="rm">papi</command>
+      <command name="rm">cmake</command>
+      <command name="rm">cray-petsc</command>
+      <command name="rm">esmf</command>
+      <command name="rm">zlib</command>
+      <command name="rm">craype-hugepages2M</command>
+      <command name="rm">darshan</command>
+      <command name="load">craype</command>
+      <command name="load">PrgEnv-intel</command>
+      <command name="load">cray-mpich</command>
+      <command name="rm">craype-haswell</command>
+      <command name="load">craype-mic-knl</command>
+    </modules>
+    <modules mpilib="mpt">
+      <command name="swap">cray-mpich cray-mpich/7.7.10</command>
+    </modules>
+    <modules mpilib="impi">
+      <command name="swap">cray-mpich impi/2020</command>
+    </modules>
+    <modules compiler="intel">
+      <command name="load">PrgEnv-intel/6.0.5</command>
+      <command name="rm">intel</command>
+      <command name="load">intel/19.0.3.199</command>
+    </modules>
+    <modules compiler="gnu">
+      <command name="swap">PrgEnv-intel PrgEnv-gnu/6.0.5</command>
+      <command name="rm">gcc</command>
+      <command name="load">gcc/8.3.0</command>
+      <command name="rm">cray-libsci</command>
+      <command name="load">cray-libsci/19.06.1</command>
+    </modules>
+    <modules>
+      <command name="swap">craype craype/2.6.2</command>
+      <command name="rm">pmi</command>
+      <command name="load">pmi/5.0.14</command>
+      <command name="rm">craype-haswell</command>
+      <command name="load">craype-mic-knl</command>
+    </modules>
+    <modules mpilib="mpi-serial">
+      <command name="rm">cray-netcdf-hdf5parallel</command>
+      <command name="rm">cray-hdf5-parallel</command>
+      <command name="rm">cray-parallel-netcdf</command>
+      <command name="load">cray-netcdf/4.6.3.2</command>
+      <command name="load">cray-hdf5/1.10.5.2</command>
+    </modules>
+    <modules mpilib="!mpi-serial">
+      <command name="rm">cray-netcdf-hdf5parallel</command>
+      <command name="load">cray-netcdf-hdf5parallel/4.6.3.2</command>
+      <command name="load">cray-hdf5-parallel/1.10.5.2</command>
+      <command name="load">cray-parallel-netcdf/1.11.1.1</command>
+    </modules>
+    <modules>
+      <command name="rm">git</command>
+      <command name="load">git</command>
+      <command name="rm">cmake</command>
+      <command name="load">cmake/3.21.3</command>
+      <command name="load">perl5-extras</command>
+    </modules>
+  </module_system>
+  <environment_variables>
+    <env name="MPICH_ENV_DISPLAY">1</env>
+    <env name="MPICH_VERSION_DISPLAY">1</env>
+    <env name="OMP_STACKSIZE">128M</env>
+    <env name="OMP_PROC_BIND">spread</env>
+    <env name="OMP_PLACES">threads</env>
+    <env name="HDF5_USE_FILE_LOCKING">FALSE</env>
+    <env name="CRAYPE_LINK_TYPE">static</env>
+  </environment_variables>
+  <environment_variables mpilib="mpt">
+    <env name="MPICH_GNI_DYNAMIC_CONN">disabled</env>
+  </environment_variables>
+  <environment_variables compiler="intel">
+    <env name="MPICH_MEMORY_REPORT">1</env>
+  </environment_variables>
+  <mpirun mpilib="default">
+    <executable>srun</executable>
+    <arguments>
+      <arg name="label"> --label</arg>
+      <arg name="num_tasks"> -n {{ total_tasks }} -N {{ num_nodes }}</arg>
+      <arg name="thread_count">-c $SHELL{mpn=`./xmlquery --value MAX_MPITASKS_PER_NODE`; if [ 68 -ge $mpn ]; then c0=`expr 272 / $mpn`; c1=`expr $c0 / 4`; cflag=`expr $c1 \* 4`; echo $cflag|bc ; else echo 272/$mpn|bc;fi;} </arg>
+      <arg name="binding"> $SHELL{if [ 68 -ge `./xmlquery --value MAX_MPITASKS_PER_NODE` ]; then echo "--cpu_bind=cores"; else echo "--cpu_bind=threads";fi;} </arg>
+      <arg name="placement"> -m plane=$SHELL{echo `./xmlquery --value MAX_MPITASKS_PER_NODE`}</arg>
+    </arguments>
+  </mpirun>
+</file>

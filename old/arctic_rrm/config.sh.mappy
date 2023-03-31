@@ -1,0 +1,26 @@
+#!/bin/bash
+atm_grid_name=arcticx4v1pg2
+dyn_grid_name=arcticx4v1
+tempest_root=${HOME}/codes/e3sm_grids/tempestremap
+output_root=/sems-data-store/ACME/bhillma/e3sm/grids/${atm_grid_name} #/sems-data-store/ACME/bhillma/grids/${atm_grid_name}
+inputdata_root=/sems-data-store/ACME/inputdata #/sems-data-store/ACME/inputdata
+e3sm_root=${HOME}/codes/e3sm/branches/fix-mkmapdata #${HOME}/codes/e3sm/branches/master
+
+atm_grid_file=${output_root}/${atm_grid_name}.g
+atm_scrip_file=${output_root}/${atm_grid_name}_scrip.nc
+
+ocn_grid_name=oARRM60to10
+ocn_grid_file="${inputdata_root}/ocn/mpas-o/oRRS18to6v3/oRRS18to6v3.171116.nc"
+
+lnd_grid_name=${atm_grid_name}
+lnd_grid_file=${atm_grid_file}
+#lnd_grid_name=r0125
+#lnd_scrip_file=${inputdata_root}/lnd/clm2/mappingdata/grids/MOSART_global_8th.scrip.20180211c.nc
+
+# Machine and compiler will be used in some of the scripts to get proper environment
+machine="mappy"
+fortran_compiler="gfortran"
+
+# Need an environment with at least nco and ncl; can create this with conda like:
+# > conda create --name ncl -c conda-forge nco ncl
+#source activate ncl

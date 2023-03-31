@@ -12,7 +12,6 @@ fi
 tools_root=${PWD}/tools
 
 # Build homme_tool
-./build_homme_tool.sh $1
 ntasks=4
 
 mkdir -p ${output_root}/grids
@@ -38,7 +37,7 @@ output_type='netcdf'
 io_stride = 16
 /
 EOF
-srun --nodes=1 --ntasks=${ntasks} ${tools_root}/homme_tool/src/tool/homme_tool < input.nl
+srun --nodes=1 --ntasks=${ntasks} --constraint=cpu --time=00:10:00 ${tools_root}/homme_tool/src/tool/homme_tool < input.nl
 
 # make the 'scrip' file for target GLL grid
 ncks -O -v lat,lon,area,cv_lat,cv_lon ne${atm_resolution}np4_tmp1.nc ne${atm_resolution}np4_tmp.nc

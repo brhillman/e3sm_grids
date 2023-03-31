@@ -10,16 +10,14 @@ else
     exit 1
 fi
 
-# Convert input mesh to SCRIP format
-datestring=`date +%Y%m%d`
-in_mesh=${output_root}/grids/${atm_grid_name}.g
-out_mesh=${output_root}/grids/${atm_grid_name}_scrip.nc
+in_mesh=${output_root}/grids/ne${atm_resolution}.g
+out_mesh=${output_root}/grids/ne${atm_resolution}pg2.g
 if [ -e ${out_mesh} ]; then
     echo "${out_mesh} exists; skipping."
     exit 0
 else
-    ConvertMeshToSCRIP --in ${in_mesh} --out ${out_mesh}
+    GenerateVolumetricMesh \
+        --in ${in_mesh} \
+        --out ${out_mesh} \
+        --np 2 --uniform
 fi
-
-# Make sure grid_imask has type int and convert to cdf5 format
-ncap2 -5 -O -s "grid_imask = int(grid_imask)" ${out_mesh} ${out_mesh}

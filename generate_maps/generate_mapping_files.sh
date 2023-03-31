@@ -25,26 +25,13 @@ for arg in "$@"; do
     esac
 done
 
-
-# Load a common conda environment for E3SM pre and post processing tools
-#source /global/project/projectdirs/acme/software/anaconda_envs/load_latest_e3sm_unified.sh
-module load python
-source activate e3sm-unified
-
-# Append path to include TempestRemap path
-tempest_path=${PWD}/tempestremap/bin
-PATH=${tempest_path}:${PATH}
-
-# Need to override hard-coded paths in NCO scripts
-#export NCO_PATH_OVERRIDE='No'
-
 # Generate mapping files between all grids
 datestring=`date +'%y%m%d'`
 
-if [ "${method}" == "esmf" ] || [ "${method}" == "nco" ]; then
-    atm_grid_file=${output_root}/${atm_grid_name}_scrip.nc #${atm_scrip_file}
+if [ "${method}" == "aave" ] || [ "${method}" == "bilin" ] || [ "${method}" == "nco" ]; then
+    atm_grid_file=${output_root}/grids/${atm_grid_name}_scrip.nc #${atm_scrip_file}
 else
-    atm_grid_file=${output_root}/${dyn_grid_name}.g
+    atm_grid_file=${output_root}/grids/${dyn_grid_name}.g
 fi
 echo "Using atmosphere grid file ${atm_grid_file}"
 mapping_root=${output_root}/mapping_files
