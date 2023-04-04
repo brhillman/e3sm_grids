@@ -2,28 +2,47 @@
 
 set -e
 
+function usage () {
+    echo "usage: `basename $0` <machine config> <grid config> [-m|--mpirun CMD]"
+}
+
 # Check input arguments
-if [ $# -eq 1 ]; then
+if [ $# -ge 2 ]; then
     source $1
+    atm_resolution=$2
 else
-    echo "usage: `basename $0` <configuration file>"
+    usage
     exit 1
 fi
+atm_grid_name="ne${atm_resolution}"
+
+# Parse optional arguments
+mpirun=
+while [ "$3" != "" ]; do
+    case $3 in
+        -m | --mpirun )
+            shift
+            mpirun=$3
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+    shift
+done
 
 # Set paths
-script_root=${PWD}
-e3sm_root="${HOME}/codes/e3sm/branches/master"
 datestring=`date +'%Y%m%d'`
-topo_unsmoothed=${output_root}/topo/USGS-gtopo30_ne${atm_resolution}np4_unsmoothed.nc
+topo_unsmoothed=${output_root}/${atm_grid_name}/topo/USGS-gtopo30_ne${atm_resolution}np4_unsmoothed.nc
 topo_smoothed=USGS-gtopo30_ne${atm_resolution}np4pg2_smoothed_phis
 
 # Get machine-specific modules
-eval $( ${e3sm_root}/cime/CIME/Tools/get_case_env ) 
+eval $( ${e3sm_root}/cime/CIME/Tools/get_case_env )
  
 # Apply dycore-specific smoothing
-ntasks=4
 echo "Run homme_tool to apply smoothing"
-cd ${output_root}/topo
+cd ${output_root}/${atm_grid_name}/topo
 smooth_phis_numcycle=6
 cat > input_topo.nl <<-EOF
 	&ctl_nl
@@ -41,6 +60,5 @@ cat > input_topo.nl <<-EOF
 	infilenames = '${topo_unsmoothed}', '${topo_smoothed}'
 	/
 EOF
-cmd="srun --nodes=1 --ntasks=${ntasks} --constraint=cpu --qos=interactive --account=e3sm --time 00:30:00"
-$cmd ${script_root}/tools/homme_tool/src/tool/homme_tool < input_topo.nl
+$mpirun ${tools_root}/homme_tool/src/tool/homme_tool < input_topo.nl
 echo "Done applying dycore smoothing."

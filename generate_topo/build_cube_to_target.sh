@@ -6,11 +6,10 @@ set -e
 if [ $# -eq 1 ]; then
     source $1
 else
-    echo "usage: `basename $0` <configuration file>"
+    echo "usage: `basename $0` <machine config>"
     exit 1
 fi
 
-tools_root=$PWD/tools
 mkdir -p ${tools_root}
 
 # build the code
