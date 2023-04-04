@@ -2,16 +2,17 @@
 # See:
 # https://acme-climate.atlassian.net/wiki/spaces/ED/pages/1043235115/Special+Considerations+for+FV+Physics+Grids
 
-if [ $# -eq 1 ]; then
-    configuration=$1
-    source ${configuration}
+if [ $# -eq 2 ]; then
+    source $1
+    atm_resolution=$2
 else
-    echo "usage: `basename $0` <configuration file>"
+    echo "usage: `basename $0` <machine config> <resolution>"
     exit 1
 fi
+atm_grid_name="ne${atm_resolution}"
 
-in_mesh=${output_root}/grids/ne${atm_resolution}.g
-out_mesh=${output_root}/grids/ne${atm_resolution}pg2.g
+in_mesh=${output_root}/${atm_grid_name}/grids/ne${atm_resolution}.g
+out_mesh=${output_root}/${atm_grid_name}/grids/ne${atm_resolution}pg2.g
 if [ -e ${out_mesh} ]; then
     echo "${out_mesh} exists; skipping."
     exit 0

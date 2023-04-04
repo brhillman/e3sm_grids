@@ -1,15 +1,16 @@
 #!/bin/bash
 
-if [ $# -eq 1 ]; then
-    configuration=$1
-    source ${configuration}
+if [ $# -ge 2 ]; then
+    source $1
+    atm_resolution=$2
 else
-    echo "usage: `basename $0` <configuration file>"
+    echo "usage: `basename $0` <machine config> <resolution>"
     exit 1
 fi
+atm_grid_name="ne${atm_resolution}"
 
 # Generate exodus mesh file
-atm_mesh_file=${output_root}/grids/ne${atm_resolution}.g
+atm_mesh_file=${output_root}/${atm_grid_name}/grids/ne${atm_resolution}.g
 mkdir -p `dirname ${atm_mesh_file}`
 if [ -e ${atm_mesh_file} ]; then
     echo "${atm_mesh_file} exists; skipping."
